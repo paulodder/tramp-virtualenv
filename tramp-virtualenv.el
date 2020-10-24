@@ -3,6 +3,8 @@
 (if (boundp 'enable-remote-dir-locals)
     (setq enable-remote-dir-locals t))
 
+(defcustom tramp-virtualenv-venvs-dir "~/.virtualenvs"
+  "Directory in which virtualenvs are stored")
 
 (defun tramp-virtualenv--bin-dir ()
   (concat tramp-virtualenv-dir "/bin"))
@@ -73,8 +75,10 @@
                (reverse (split-string tramp-virtualenv-dir "/")))))
 
 (define-minor-mode tramp-virtualenv-minor-mode
-  nil ; use default docstring nil ; the initial value
-  tramp-virtualenv-mode-line-string ; mode line indicator
-  nil ; keymap :group 'tramp-virtualenv)             ; group
+  nil                                   ; use default docstring
+  nil                                   ; the initial value
+  tramp-virtualenv-mode-line-string     ; mode line indicator
+  nil                                   ; keymap
+  :group 'tramp-virtualenv)             ; group
 
   (provide 'tramp-virtualenv)
