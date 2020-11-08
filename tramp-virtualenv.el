@@ -6,6 +6,8 @@
 (defcustom tramp-virtualenv-venvs-dir "~/.virtualenvs"
   "Directory in which virtualenvs are stored")
 
+(defalias 'venv-workon-tramp 'tramp-virtualenv-workon)
+
 (defun tramp-virtualenv--bin-dir ()
   (concat tramp-virtualenv-dir "/bin"))
 
@@ -69,16 +71,43 @@
 
 (add-hook 'post-command-hook 'tramp-virtualenv)
 
+(defun tramp-virtualenv--get-venv-dir ()
+  "return remote venv dir based on default-directory variable"
+  (let ((remote-vec (tramp-dissect-file-name default-directory)))
+    (concat "/"
+            (tramp-file-name-method remote-vec)
+            ":"
+            (tramp-file-name-user remote-vec)
+            "@"
+            (tramp-file-name-host-port remote-vec)
+            ":"
+            tramp-virtualenv-venvs-dir)))
+
+(defun tramp-virtualenv--get-remote-venv-names ()
+  "return sequence of remote virtualenv names"
+  (seq-filter (lambda (f)
+                (not (string-prefix-p "." f)))
+              (directory-files (tramp-virtualenv--get-venv-dir))))
+
+(defun tramp-virtualenv--choose-venv ()
+  (completing-read "Choose a virtualenv:"
+                   (tramp-virtualenv--get-remote-venv-names)))
+
+(defun tramp-virtualenv-workon ()
+  (interactive)
+  (tramp-virtualenv (concat tramp-virtualenv-venvs-dir
+                            "/"
+                            (tramp-virtualenv--choose-venv))))
+
+
+
 (defun tramp--virtualenv-format-mode-line-string ()
   (concat " "
           (nth 0
                (reverse (split-string tramp-virtualenv-dir "/")))))
 
 (define-minor-mode tramp-virtualenv-minor-mode
-  nil                                   ; use default docstring
-  nil                                   ; the initial value
-  tramp-virtualenv-mode-line-string     ; mode line indicator
-  nil                                   ; keymap
-  :group 'tramp-virtualenv)             ; group
+  nil nil tramp-virtualenv-mode-line-string
+  nil :group 'tramp-virtualenv)
 
-  (provide 'tramp-virtualenv)
+(provide 'tramp-virtualenv)
