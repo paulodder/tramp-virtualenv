@@ -1,0 +1,9 @@
+#+BIND: org-export-use-babel nil
+#+TITLE: tramp-virtualenv
+Facilitates working with remote virtualenvs in Emacs.
+
+Make sure to set the =tramp-virtualenv-venvs-dir= variable (defaults to
+="~/.virtualenvs"=)
+
+Use =M-x venv-workon-tramp= in a remote buffer to activate a virtualenv.
+
