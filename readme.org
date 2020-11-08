@@ -3,7 +3,11 @@
 Facilitates working with remote virtualenvs in Emacs.
 
 Make sure to set the =tramp-virtualenv-venvs-dir= variable (defaults to
-=~/.virtualenvs=)
+=~/.virtualenvs=). This is the directory that is used to look for virtualenvs
+on remote machines.
+#+BEGIN_SRC emacs-lisp
+(setq tramp-virtualenv-venvs-dir "~/.virtualenvs")
+#+END_SRC
 
 Use =M-x venv-workon-tramp= in a remote buffer to activate a virtualenv.
 
